@@ -1,4 +1,4 @@
-# AI Job Hunter Assistant 🤖
+# AI Job Hunter Assistant
 
 An AI-powered automation workflow that discovers jobs, filters relevant roles, scores fit using a local LLM, generates cover letters, and sends instant alerts.
 
