@@ -1,0 +1,494 @@
+{
+  "name": "AI Job Hunter v1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        16
+      ],
+      "id": "caadcb69-2a37-4f23-b1e3-76e44d82387e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ea3ef74e-b5b5-4c0d-a4ac-4c70b9a15a72",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "Python",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "8ff1b4ec-1c36-4e1e-92fb-f7b7f4f7d07e",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "AI",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "fcdf61fe-1036-4f45-be7d-e14da867b226",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "Machine Learning",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "a2756a09-12e1-4537-a8d7-b20c1ae33ec2",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "Data Engineer",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        16
+      ],
+      "id": "41ed86bf-e392-4b55-a3b8-b36f78a8b062",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "860312634",
+        "text": "=Role: {{ $('Merge').item.json.title }}\nCompany: {{ $('Merge').item.json.company_name }}\nScore: {{$node['Ollama Score'].json.response}}%\n\nApply: {{ $('Merge').item.json.url }}\n\nCover Letter:\n{{$json.response}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2752,
+        -144
+      ],
+      "id": "5890f261-cca8-4403-bb21-899ce384fca7",
+      "name": "Send a text message",
+      "webhookId": "3b0485a4-7ab9-48b5-98f3-c66ea33c2fe2",
+      "credentials": {
+        "telegramApi": {
+          "id": "PEgbAPzlorpmFvhW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1JHgbvYm_-JBKwwak_i3E1iDEQvjhirabTlUOROuV4w0",
+          "mode": "list",
+          "cachedResultName": "AI Job Hunter Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JHgbvYm_-JBKwwak_i3E1iDEQvjhirabTlUOROuV4w0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JHgbvYm_-JBKwwak_i3E1iDEQvjhirabTlUOROuV4w0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now }}",
+            "Job Title": "={{ $('Merge').item.json.title }}",
+            "Source": "arbeitnow.com",
+            "Company": "={{ $('Merge').item.json.company_name }}",
+            "Link": "={{ $('Merge').item.json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Job Title",
+              "displayName": "Job Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3168,
+        -144
+      ],
+      "id": "dc8ea6d8-b449-4a7f-b208-0c032d02c7af",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BhzI5htg9cCbVRYB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1JHgbvYm_-JBKwwak_i3E1iDEQvjhirabTlUOROuV4w0",
+          "mode": "list",
+          "cachedResultName": "AI Job Hunter Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JHgbvYm_-JBKwwak_i3E1iDEQvjhirabTlUOROuV4w0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1JHgbvYm_-JBKwwak_i3E1iDEQvjhirabTlUOROuV4w0/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Link",
+              "lookupValue": "={{ $json.url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1280,
+        0
+      ],
+      "id": "2128e232-ed7f-4260-ada7-0c2c26ee6985",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "BhzI5htg9cCbVRYB",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        400,
+        16
+      ],
+      "id": "680de0d6-7786-44f2-827f-2fccfbf1ede9",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "advanced": true,
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "url",
+              "field2": "Link"
+            }
+          ]
+        },
+        "joinMode": "keepNonMatches",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1504,
+        -336
+      ],
+      "id": "d4b76ccb-62e9-47ad-8358-5d4730f6c838",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama3\",\n  \"stream\": false,\n  \"prompt\": \"Rate this job from 1 to 100 for candidate with Python, FastAPI, SQL, Automation, internship experience. Return ONLY number. Job Title: {{$json.title}} Company: {{$json.company_name}} Description: {{$json.description.replace(/\\\"/g,'').replace(/\\n/g,' ')}}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1728,
+        -96
+      ],
+      "id": "21409dc4-b7e2-4f2e-aea6-e96d751a3fc8",
+      "name": "Ollama Score"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b44fb78e-0afe-4e5b-abdc-dbd5ef95123d",
+              "leftValue": "={{ $json.response.toNumber() }}",
+              "rightValue": 75,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2064,
+        -96
+      ],
+      "id": "d0bd6b0c-c2fa-44c5-95da-6e8b4e3a8af8",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"llama3\",\n  \"stream\": false,\n  \"prompt\": \"Write a short professional cover letter under 120 words.My name is Anubhav Sharma. \\nCandidate: Python Developer with backend internship experience.\\nJob Title: {{ $('Merge').item.json.title }}\\nCompany: {{ $('Merge').item.json.company_name }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        2400,
+        -352
+      ],
+      "id": "5ea471aa-7a89-4e37-8a92-958447e620dd",
+      "name": "Generate Cover Letter"
+    },
+    {
+      "parameters": {
+        "url": "https://www.arbeitnow.com/api/job-board-api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        96,
+        -176
+      ],
+      "id": "9c274a07-28f4-4fa1-ba95-97abe5e45794",
+      "name": "Get Active Job Openings"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Active Job Openings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Ollama Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Score": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Generate Cover Letter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Cover Letter": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Active Job Openings": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2c8c6000-c910-4200-b5ac-e7908548d3b2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9188f6bf533ca01ca1729ebd43fff7dbca74dd5ea25c095b20d0717a6f42b916"
+  },
+  "id": "8SUe8DfGoFRtMKft",
+  "tags": []
+}
